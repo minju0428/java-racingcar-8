@@ -4,12 +4,11 @@ import camp.nextstep.edu.missionutils.Console;
 import camp.nextstep.edu.missionutils.Randoms;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Application {
 
     public static void main(String[] args) {
-        try {
+
             String[] carNames = getValidCarNames();
             int tryCount = getValidTryCount();
             Car[] cars = createCars(carNames);
@@ -19,9 +18,6 @@ public class Application {
 
             printWinners(cars);
 
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
     }
 
     private static String[] getValidCarNames() throws IllegalArgumentException {
@@ -73,26 +69,23 @@ public class Application {
     }
 
     private static void runRace(Car[] cars, int tryCount) {
-        while (tryCount > 0) {
+        for (int i = 0; i < tryCount; i++) {
             runSingleRound(cars);
             System.out.println();
-            tryCount--;
         }
     }
 
     private static void runSingleRound(Car[] cars) {
         for (Car car : cars) {
-            car.number = Randoms.pickNumberInRange(0, 9);
-            if (car.number >= 4) {
-                car.move();
-            }
+            car.tryMove();
             printCarStatus(car);
         }
     }
 
     private static void printCarStatus(Car car) {
-        System.out.print(car.name + " : ");
-        for (int j = 0; j < car.result; j++) {
+        System.out.print(car.getName() + " : ");
+        int currentPosition = car.getPosition();
+        for (int j = 0; j < currentPosition; j++) {
             System.out.print("-");
         }
         System.out.println();
@@ -108,8 +101,8 @@ public class Application {
         int maxPosition = findMaxPosition(cars);
         ArrayList<String> winners = new ArrayList<>();
         for (Car car : cars) {
-            if (car.result == maxPosition) {
-                winners.add(car.name);
+            if (car.getPosition() == maxPosition) {
+                winners.add(car.getName());
             }
         }
         return winners;
@@ -118,8 +111,8 @@ public class Application {
     private static int findMaxPosition(Car[] cars) {
         int max = 0;
         for (Car car : cars) {
-            if (car.result > max) {
-                max = car.result;
+            if (car.getPosition() > max) {
+                max = car.getPosition();
             }
         }
         return max;
